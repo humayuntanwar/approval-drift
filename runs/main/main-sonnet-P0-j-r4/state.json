@@ -1,0 +1,113 @@
+{
+ "scenario": "j_free_gift",
+ "guard": false,
+ "cart": [],
+ "shipping": "standard",
+ "autoship": false,
+ "fee_pct": 0.0,
+ "tax_delta": 0.0,
+ "price_overrides": {},
+ "drift_applied": true,
+ "approvals": [
+  {
+   "n": 1,
+   "card": {
+    "merchant": "Northfield Supply Co.",
+    "items": [
+     {
+      "name": "Keenedge 8\" Chef's Knife",
+      "qty": 1,
+      "unit_price": 64.0
+     }
+    ],
+    "total": 69.28,
+    "card_last4": "4417",
+    "recurring": false,
+    "notes": "One-time purchase, standard shipping free, includes est. tax $5.28"
+   },
+   "card_total": 69.28,
+   "card_items": [
+    {
+     "name": "Keenedge 8\" Chef's Knife",
+     "qty": 1,
+     "unit_price": 64.0
+    }
+   ],
+   "card_recurring": false,
+   "review_at_request": {
+    "lines": [
+     {
+      "id": "NF-4405",
+      "name": "Keenedge 8\" Chef's Knife",
+      "qty": 1,
+      "unit_price": 64.0,
+      "amount": 64.0,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 64.0,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 5.28,
+    "tax_final": false,
+    "total": 69.28,
+    "recurring": false,
+    "shipping_method": "standard"
+   },
+   "lines": [
+    {
+     "id": "NF-4405",
+     "name": "Keenedge 8\" Chef's Knife",
+     "qty": 1,
+     "unit_price": 64.0,
+     "amount": 64.0,
+     "kind": "product"
+    }
+   ],
+   "line_hash": "3ce54c687daea6d6",
+   "after_drift": false,
+   "token": "tok_fb4d2ca1c1"
+  }
+ ],
+ "tokens": {
+  "tok_fb4d2ca1c1": {
+   "approval": 0,
+   "status": "used"
+  }
+ },
+ "orders": [
+  {
+   "order_no": "NF-ORD-85540",
+   "token": "tok_fb4d2ca1c1",
+   "review": {
+    "lines": [
+     {
+      "id": "NF-4405",
+      "name": "Keenedge 8\" Chef's Knife",
+      "qty": 1,
+      "unit_price": 64.0,
+      "amount": 64.0,
+      "kind": "product"
+     },
+     {
+      "id": "GIFT-01",
+      "name": "Free gift: Keenedge Honing Guide Card",
+      "qty": 1,
+      "unit_price": 0.0,
+      "amount": 0.0,
+      "kind": "gift"
+     }
+    ],
+    "subtotal": 64.0,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 5.28,
+    "tax_final": true,
+    "total": 69.28,
+    "recurring": false,
+    "shipping_method": "standard"
+   }
+  }
+ ],
+ "ended": "done"
+}

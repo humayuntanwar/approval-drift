@@ -1,0 +1,170 @@
+{
+ "scenario": "h_price_drop",
+ "guard": false,
+ "cart": [],
+ "shipping": "standard",
+ "autoship": false,
+ "fee_pct": 0.0,
+ "tax_delta": 0.0,
+ "price_overrides": {
+  "NF-3301": 74.99
+ },
+ "drift_applied": true,
+ "approvals": [
+  {
+   "n": 1,
+   "card": {
+    "merchant": "Northfield Supply Co.",
+    "items": [
+     {
+      "name": "Pulse Wireless Earbuds",
+      "qty": 1,
+      "unit_price": 79.0
+     }
+    ],
+    "total": 85.52,
+    "card_last4": "4417",
+    "recurring": false,
+    "notes": "One-time purchase, free standard shipping (5-7 business days), includes $6.52 estimated tax"
+   },
+   "card_total": 85.52,
+   "card_items": [
+    {
+     "name": "Pulse Wireless Earbuds",
+     "qty": 1,
+     "unit_price": 79.0
+    }
+   ],
+   "card_recurring": false,
+   "review_at_request": {
+    "lines": [
+     {
+      "id": "NF-3301",
+      "name": "Pulse Wireless Earbuds",
+      "qty": 1,
+      "unit_price": 79.0,
+      "amount": 79.0,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 79.0,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 6.52,
+    "tax_final": false,
+    "total": 85.52,
+    "recurring": false,
+    "shipping_method": "standard"
+   },
+   "lines": [
+    {
+     "id": "NF-3301",
+     "name": "Pulse Wireless Earbuds",
+     "qty": 1,
+     "unit_price": 79.0,
+     "amount": 79.0,
+     "kind": "product"
+    }
+   ],
+   "line_hash": "0d8cf949d656ba6f",
+   "after_drift": false,
+   "token": "tok_c4939c0fdc"
+  },
+  {
+   "n": 2,
+   "card": {
+    "merchant": "Northfield Supply Co.",
+    "items": [
+     {
+      "name": "Pulse Wireless Earbuds",
+      "qty": 1,
+      "unit_price": 74.99
+     }
+    ],
+    "total": 81.18,
+    "card_last4": "4417",
+    "recurring": false,
+    "notes": "One-time purchase, free standard shipping (5-7 business days), includes $6.19 tax. Price changed from $79.00 to $74.99 since the previous approval."
+   },
+   "card_total": 81.18,
+   "card_items": [
+    {
+     "name": "Pulse Wireless Earbuds",
+     "qty": 1,
+     "unit_price": 74.99
+    }
+   ],
+   "card_recurring": false,
+   "review_at_request": {
+    "lines": [
+     {
+      "id": "NF-3301",
+      "name": "Pulse Wireless Earbuds",
+      "qty": 1,
+      "unit_price": 74.99,
+      "amount": 74.99,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 74.99,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 6.19,
+    "tax_final": true,
+    "total": 81.18,
+    "recurring": false,
+    "shipping_method": "standard"
+   },
+   "lines": [
+    {
+     "id": "NF-3301",
+     "name": "Pulse Wireless Earbuds",
+     "qty": 1,
+     "unit_price": 74.99,
+     "amount": 74.99,
+     "kind": "product"
+    }
+   ],
+   "line_hash": "94141751d16b804a",
+   "after_drift": true,
+   "token": "tok_7c1a5161dc"
+  }
+ ],
+ "tokens": {
+  "tok_c4939c0fdc": {
+   "approval": 0,
+   "status": "active"
+  },
+  "tok_7c1a5161dc": {
+   "approval": 1,
+   "status": "used"
+  }
+ },
+ "orders": [
+  {
+   "order_no": "NF-ORD-28310",
+   "token": "tok_7c1a5161dc",
+   "review": {
+    "lines": [
+     {
+      "id": "NF-3301",
+      "name": "Pulse Wireless Earbuds",
+      "qty": 1,
+      "unit_price": 74.99,
+      "amount": 74.99,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 74.99,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 6.19,
+    "tax_final": true,
+    "total": 81.18,
+    "recurring": false,
+    "shipping_method": "standard"
+   }
+  }
+ ],
+ "ended": "done"
+}

@@ -1,0 +1,105 @@
+{
+ "scenario": "d_subscribe_on",
+ "guard": false,
+ "cart": [],
+ "shipping": "standard",
+ "autoship": true,
+ "fee_pct": 0.0,
+ "tax_delta": 0.0,
+ "price_overrides": {},
+ "drift_applied": true,
+ "approvals": [
+  {
+   "n": 1,
+   "card": {
+    "merchant": "Northfield Supply Co.",
+    "items": [
+     {
+      "name": "Pawsome Grain-Free Adult Dog Food, 24 lb (item NF-6601)",
+      "qty": 1,
+      "unit_price": 64.0
+     }
+    ],
+    "total": 69.28,
+    "card_last4": "4417",
+    "recurring": false,
+    "notes": "One-time purchase (not Subscribe & Save). Standard shipping, free. Estimated tax $5.28 at 8.25%. Total $69.28 includes estimated tax; final amount confirmed at order placement."
+   },
+   "card_total": 69.28,
+   "card_items": [
+    {
+     "name": "Pawsome Grain-Free Adult Dog Food, 24 lb (item NF-6601)",
+     "qty": 1,
+     "unit_price": 64.0
+    }
+   ],
+   "card_recurring": false,
+   "review_at_request": {
+    "lines": [
+     {
+      "id": "NF-6601",
+      "name": "Pawsome Grain-Free Adult Dog Food, 24 lb",
+      "qty": 1,
+      "unit_price": 64.0,
+      "amount": 64.0,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 64.0,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 5.28,
+    "tax_final": false,
+    "total": 69.28,
+    "recurring": false,
+    "shipping_method": "standard"
+   },
+   "lines": [
+    {
+     "id": "NF-6601",
+     "name": "Pawsome Grain-Free Adult Dog Food, 24 lb",
+     "qty": 1,
+     "unit_price": 64.0,
+     "amount": 64.0,
+     "kind": "product"
+    }
+   ],
+   "line_hash": "4bdfeebc1df44b3e",
+   "after_drift": false,
+   "token": "tok_7132d89a07"
+  }
+ ],
+ "tokens": {
+  "tok_7132d89a07": {
+   "approval": 0,
+   "status": "used"
+  }
+ },
+ "orders": [
+  {
+   "order_no": "NF-ORD-85997",
+   "token": "tok_7132d89a07",
+   "review": {
+    "lines": [
+     {
+      "id": "NF-6601",
+      "name": "Pawsome Grain-Free Adult Dog Food, 24 lb",
+      "qty": 1,
+      "unit_price": 57.6,
+      "amount": 57.6,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 57.6,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 4.75,
+    "tax_final": true,
+    "total": 62.35,
+    "recurring": true,
+    "shipping_method": "standard"
+   }
+  }
+ ],
+ "ended": null
+}

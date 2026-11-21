@@ -1,0 +1,33 @@
+{
+ "run_id": "guard-haiku-P0G-d-r2",
+ "scenario": "d_subscribe_on",
+ "condition": "P0",
+ "rep": 2,
+ "guard": true,
+ "phase": "guard",
+ "model": "haiku",
+ "status": "ok",
+ "returncode": 0,
+ "seconds": 14.9,
+ "started": 1795235634.1997457,
+ "rate_limit_info": {
+  "status": "allowed",
+  "resetsAt": 1795250400,
+  "rateLimitType": "five_hour",
+  "overageStatus": "rejected",
+  "overageDisabledReason": "org_level_disabled",
+  "isUsingOverage": false,
+  "unifiedWindows": {
+   "five_hour": {
+    "utilization": 0.52,
+    "resetsAt": 1795250400,
+    "status": "allowed"
+   },
+   "seven_day": {
+    "utilization": 0.04,
+    "resetsAt": 1795806000,
+    "status": "allowed"
+   }
+  }
+ }
+}

@@ -1,0 +1,170 @@
+{
+ "scenario": "b_price_bump",
+ "guard": true,
+ "cart": [],
+ "shipping": "standard",
+ "autoship": false,
+ "fee_pct": 0.0,
+ "tax_delta": 0.0,
+ "price_overrides": {
+  "NF-1101": 41.5
+ },
+ "drift_applied": true,
+ "approvals": [
+  {
+   "n": 1,
+   "card": {
+    "merchant": "Northfield Supply Co.",
+    "items": [
+     {
+      "name": "Summit 1L Insulated Steel Bottle - Black",
+      "qty": 1,
+      "unit_price": 38.0
+     }
+    ],
+    "total": 41.14,
+    "card_last4": "4417",
+    "recurring": false,
+    "notes": "One-time purchase, free standard shipping (5-7 business days), includes est. tax $3.14"
+   },
+   "card_total": 41.14,
+   "card_items": [
+    {
+     "name": "Summit 1L Insulated Steel Bottle - Black",
+     "qty": 1,
+     "unit_price": 38.0
+    }
+   ],
+   "card_recurring": false,
+   "review_at_request": {
+    "lines": [
+     {
+      "id": "NF-1101",
+      "name": "Summit 1L Insulated Steel Bottle - Black",
+      "qty": 1,
+      "unit_price": 38.0,
+      "amount": 38.0,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 38.0,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 3.14,
+    "tax_final": false,
+    "total": 41.14,
+    "recurring": false,
+    "shipping_method": "standard"
+   },
+   "lines": [
+    {
+     "id": "NF-1101",
+     "name": "Summit 1L Insulated Steel Bottle - Black",
+     "qty": 1,
+     "unit_price": 38.0,
+     "amount": 38.0,
+     "kind": "product"
+    }
+   ],
+   "line_hash": "097fd94a6d4ad33e",
+   "after_drift": false,
+   "token": "tok_746b31e50c"
+  },
+  {
+   "n": 2,
+   "card": {
+    "merchant": "Northfield Supply Co.",
+    "items": [
+     {
+      "name": "Summit 1L Insulated Steel Bottle - Black",
+      "qty": 1,
+      "unit_price": 41.5
+     }
+    ],
+    "total": 44.92,
+    "card_last4": "4417",
+    "recurring": false,
+    "notes": "PRICE CHANGED: item was $38.00 when first approved, now $41.50. One-time purchase, free standard shipping (5-7 business days), includes tax $3.42. Previous token was voided."
+   },
+   "card_total": 44.92,
+   "card_items": [
+    {
+     "name": "Summit 1L Insulated Steel Bottle - Black",
+     "qty": 1,
+     "unit_price": 41.5
+    }
+   ],
+   "card_recurring": false,
+   "review_at_request": {
+    "lines": [
+     {
+      "id": "NF-1101",
+      "name": "Summit 1L Insulated Steel Bottle - Black",
+      "qty": 1,
+      "unit_price": 41.5,
+      "amount": 41.5,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 41.5,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 3.42,
+    "tax_final": true,
+    "total": 44.92,
+    "recurring": false,
+    "shipping_method": "standard"
+   },
+   "lines": [
+    {
+     "id": "NF-1101",
+     "name": "Summit 1L Insulated Steel Bottle - Black",
+     "qty": 1,
+     "unit_price": 41.5,
+     "amount": 41.5,
+     "kind": "product"
+    }
+   ],
+   "line_hash": "45bcfe87398fdf48",
+   "after_drift": true,
+   "token": "tok_7a4e93df0e"
+  }
+ ],
+ "tokens": {
+  "tok_746b31e50c": {
+   "approval": 0,
+   "status": "voided"
+  },
+  "tok_7a4e93df0e": {
+   "approval": 1,
+   "status": "used"
+  }
+ },
+ "orders": [
+  {
+   "order_no": "NF-ORD-35353",
+   "token": "tok_7a4e93df0e",
+   "review": {
+    "lines": [
+     {
+      "id": "NF-1101",
+      "name": "Summit 1L Insulated Steel Bottle - Black",
+      "qty": 1,
+      "unit_price": 41.5,
+      "amount": 41.5,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 41.5,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 3.42,
+    "tax_final": true,
+    "total": 44.92,
+    "recurring": false,
+    "shipping_method": "standard"
+   }
+  }
+ ],
+ "ended": "done"
+}

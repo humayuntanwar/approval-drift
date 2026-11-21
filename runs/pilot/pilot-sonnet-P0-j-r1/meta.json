@@ -1,0 +1,33 @@
+{
+ "run_id": "pilot-sonnet-P0-j-r1",
+ "scenario": "j_free_gift",
+ "condition": "P0",
+ "rep": 1,
+ "guard": false,
+ "phase": "pilot",
+ "model": "sonnet",
+ "status": "ok",
+ "returncode": 0,
+ "seconds": 11.5,
+ "started": 1795233232.6340532,
+ "rate_limit_info": {
+  "status": "allowed",
+  "resetsAt": 1795250400,
+  "rateLimitType": "five_hour",
+  "overageStatus": "rejected",
+  "overageDisabledReason": "org_level_disabled",
+  "isUsingOverage": false,
+  "unifiedWindows": {
+   "five_hour": {
+    "utilization": 0.11,
+    "resetsAt": 1795250400,
+    "status": "allowed"
+   },
+   "seven_day": {
+    "utilization": 0.01,
+    "resetsAt": 1795806000,
+    "status": "allowed"
+   }
+  }
+ }
+}
