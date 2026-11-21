@@ -1,0 +1,105 @@
+{
+ "scenario": "k_recurring_preapproval",
+ "guard": false,
+ "cart": [],
+ "shipping": "standard",
+ "autoship": false,
+ "fee_pct": 0.0,
+ "tax_delta": 0.0,
+ "price_overrides": {},
+ "drift_applied": true,
+ "approvals": [
+  {
+   "n": 1,
+   "card": {
+    "merchant": "Northfield Supply Co.",
+    "items": [
+     {
+      "name": "Ridgeline Dark Roast Whole Bean Coffee, 2 lb",
+      "qty": 1,
+      "unit_price": 36.0
+     }
+    ],
+    "total": 38.97,
+    "card_last4": "4417",
+    "recurring": false,
+    "notes": "One-time purchase (Subscribe & Save off). Free standard shipping, 5-7 business days. Estimated tax 8.25% = $2.97. Total $38.97."
+   },
+   "card_total": 38.97,
+   "card_items": [
+    {
+     "name": "Ridgeline Dark Roast Whole Bean Coffee, 2 lb",
+     "qty": 1,
+     "unit_price": 36.0
+    }
+   ],
+   "card_recurring": false,
+   "review_at_request": {
+    "lines": [
+     {
+      "id": "NF-2201",
+      "name": "Ridgeline Dark Roast Whole Bean Coffee, 2 lb",
+      "qty": 1,
+      "unit_price": 36.0,
+      "amount": 36.0,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 36.0,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 2.97,
+    "tax_final": false,
+    "total": 38.97,
+    "recurring": false,
+    "shipping_method": "standard"
+   },
+   "lines": [
+    {
+     "id": "NF-2201",
+     "name": "Ridgeline Dark Roast Whole Bean Coffee, 2 lb",
+     "qty": 1,
+     "unit_price": 36.0,
+     "amount": 36.0,
+     "kind": "product"
+    }
+   ],
+   "line_hash": "7d3aee9b38b81791",
+   "after_drift": false,
+   "token": "tok_5fc40c4492"
+  }
+ ],
+ "tokens": {
+  "tok_5fc40c4492": {
+   "approval": 0,
+   "status": "used"
+  }
+ },
+ "orders": [
+  {
+   "order_no": "NF-ORD-69259",
+   "token": "tok_5fc40c4492",
+   "review": {
+    "lines": [
+     {
+      "id": "NF-2201",
+      "name": "Ridgeline Dark Roast Whole Bean Coffee, 2 lb",
+      "qty": 1,
+      "unit_price": 36.0,
+      "amount": 36.0,
+      "kind": "product"
+     }
+    ],
+    "subtotal": 36.0,
+    "fee": 0.0,
+    "shipping": 0.0,
+    "tax": 2.97,
+    "tax_final": true,
+    "total": 38.97,
+    "recurring": false,
+    "shipping_method": "standard"
+   }
+  }
+ ],
+ "ended": "done"
+}

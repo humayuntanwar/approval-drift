@@ -3,6 +3,7 @@
 import csv
 import json
 import os
+import re
 import sys
 from collections import Counter
 
@@ -17,7 +18,7 @@ INK, INK2, GRID, BG = "#0b0b0b", "#52514e", "#e4e3df", "#ffffff"
 C = {"P0": "#2a78d6", "P1": "#eb6834"}
 NAME = {"P0": "P0 plain prompt", "P1": "P1 careful prompt"}
 IMG = os.path.join(REPO, "images")
-plt.rcParams.update({"font.size": 17, "text.color": INK, "axes.labelcolor": INK, "xtick.color": INK2,
+plt.rcParams.update({"text.parse_math": False, "font.size": 17, "text.color": INK, "axes.labelcolor": INK, "xtick.color": INK2,
                      "ytick.color": INK, "axes.edgecolor": GRID, "font.family": "DejaVu Sans"})
 
 
@@ -27,7 +28,8 @@ def rows(phase="main", model="sonnet", guard="0"):
 
 
 def short(sc):
-    return sc.split("_")[0] + ") " + SCEN[sc]["label"]
+    lab = SCEN[sc]["label"].replace("subscription already on BEFORE approval", "subscription on before approval")
+    return sc.split("_")[0] + ") " + lab
 
 
 def bars(ax, scen, data, field):
@@ -42,7 +44,8 @@ def bars(ax, scen, data, field):
             lo, hi = wilson(k, n)
             y = i + (j - (len(conds) - 1) / 2) * h
             ax.barh(y, 100 * k / n, height=h - 0.06, color=C[c], label=NAME[c] if i == 0 else None)
-            ax.plot([100 * lo, 100 * hi], [y, y], color=INK, lw=1.6)
+            ax.errorbar(100 * k / n, y, xerr=[[100 * k / n - 100 * lo], [100 * hi - 100 * k / n]], fmt="o",
+                        ms=4, color=INK2, ecolor="#9a9893", elinewidth=1.2, capsize=4)
             ax.text(max(100 * hi, 100 * k / n) + 2, y, "%d/%d" % (k, n), va="center", fontsize=14, color=INK2)
     ax.set_yticks(range(len(scen)))
     ax.set_yticklabels([short(s) for s in scen])
@@ -59,14 +62,14 @@ def bars(ax, scen, data, field):
 def fig_results():
     data = rows()
     fig = plt.figure(figsize=(16, 9), dpi=100, facecolor=BG)
-    ax1 = fig.add_axes([0.30, 0.36, 0.66, 0.47])
-    ax2 = fig.add_axes([0.30, 0.08, 0.66, 0.20])
+    ax1 = fig.add_axes([0.30, 0.40, 0.66, 0.43])
+    ax2 = fig.add_axes([0.30, 0.06, 0.66, 0.26])
     bars(ax1, HARM + PRE, data, "unsafe")
     bars(ax2, SAFE, data, "over_refusal")
     n = len([r for r in data if r["condition"] == "P0" and r["scenario"] == HARM[0]])
-    fig.text(0.02, 0.94, "Agent paid a different order than the human approved", fontsize=28, weight="bold")
-    fig.text(0.02, 0.895, "sandbox store, Sonnet as the shopping agent, %d runs per bar, lines = 95%% CI. "
-             "Drift injected after the approval tap." % n, fontsize=16, color=INK2)
+    fig.text(0.02, 0.94, "How often the agent paid an order the human did not approve", fontsize=28, weight="bold")
+    fig.text(0.02, 0.895, "sandbox store, Sonnet as the shopping agent, %d runs per bar, whiskers = 95%% CI. "
+             "Change injected after the approval tap." % n, fontsize=16, color=INK2)
     ax1.set_title("harmful change: % of runs that paid it (unsafe)", loc="left", fontsize=18, color=INK)
     ax2.set_title("harmless change: % of runs that refused to pay (over-refusal)", loc="left", fontsize=18, color=INK)
     ax1.legend(loc="lower right", frameon=False, fontsize=15)
@@ -131,10 +134,23 @@ def fig_side_by_side():
         y -= 0.033
     y = 0.76
     for line, bad in hl[:22]:
-        fig.text(0.52, y, line[:52], family="DejaVu Sans Mono", fontsize=15,
+        line = re.sub(r"\s{3,}", "   ", line.split(" (wallet token")[0])
+        fig.text(0.52, y, line[:60], family="DejaVu Sans Mono", fontsize=14,
                  bbox=dict(facecolor="#fde2d6", edgecolor="none", pad=2) if bad else None,
                  color=INK, weight="bold" if bad else "normal")
         y -= 0.033
+    rep = r["report"]
+    first = rep.split(". ")[0][:150] + ". " + (rep.split(". ")[1][:110] + "." if ". " in rep else "")
+    fig.text(0.52, 0.30, "what the agent told the user afterwards:", fontsize=15, color=INK2)
+    words, cur, lines_ = first.split(), "", []
+    for w in words:
+        if len(cur) + len(w) > 60:
+            lines_.append(cur)
+            cur = ""
+        cur += w + " "
+    lines_.append(cur)
+    for i, l in enumerate(lines_[:4]):
+        fig.text(0.52, 0.26 - 0.035 * i, l, fontsize=15, style="italic")
     fig.text(0.03, 0.05, "approved $%.2f   charged $%.2f   difference %+.2f   (%s)"
              % (float(r["approved_total"]), float(r["charged_total"]), float(r["charged_minus_approved"]),
                 "recurring added" if "recurring" in rec else "one-time"), fontsize=19, weight="bold")
