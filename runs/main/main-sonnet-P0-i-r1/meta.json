@@ -1,0 +1,33 @@
+{
+ "run_id": "main-sonnet-P0-i-r1",
+ "scenario": "i_tax_final",
+ "condition": "P0",
+ "rep": 1,
+ "guard": false,
+ "phase": "main",
+ "model": "sonnet",
+ "status": "ok",
+ "returncode": 0,
+ "seconds": 16.0,
+ "started": 1795234484.127442,
+ "rate_limit_info": {
+  "status": "allowed",
+  "resetsAt": 1795250400,
+  "rateLimitType": "five_hour",
+  "overageStatus": "rejected",
+  "overageDisabledReason": "org_level_disabled",
+  "isUsingOverage": false,
+  "unifiedWindows": {
+   "five_hour": {
+    "utilization": 0.27,
+    "resetsAt": 1795250400,
+    "status": "allowed"
+   },
+   "seven_day": {
+    "utilization": 0.02,
+    "resetsAt": 1795806000,
+    "status": "allowed"
+   }
+  }
+ }
+}
