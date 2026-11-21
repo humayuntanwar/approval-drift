@@ -22,7 +22,9 @@ plt.rcParams.update({"text.parse_math": False, "font.size": 17, "text.color": IN
                      "ytick.color": INK, "axes.edgecolor": GRID, "font.family": "DejaVu Sans"})
 
 
-def rows(phase="main", model="sonnet", guard="0"):
+def rows(phase="main", model="sonnet", guard=None):
+    if guard is None:
+        guard = "1" if phase == "guard" else "0"
     return [r for r in csv.DictReader(open(os.path.join(REPO, "runs", "results.csv")))
             if r["phase"] == phase and r["model"] == model and r["guard_live"] == guard]
 
@@ -32,47 +34,52 @@ def short(sc):
     return sc.split("_")[0] + ") " + lab
 
 
-def bars(ax, scen, data, field):
-    conds = [c for c in ("P0", "P1") if any(r["condition"] == c for r in data)]
-    h = 0.38
-    for j, c in enumerate(conds):
+def series():
+    sn, hk = rows(), rows(model="haiku")
+    return [("Sonnet, P0 plain prompt", [r for r in sn if r["condition"] == "P0"], "#2a78d6"),
+            ("Sonnet, P1 careful prompt", [r for r in sn if r["condition"] == "P1"], "#eb6834"),
+            ("Haiku, P0 plain prompt", hk, "#1baf7a")]
+
+
+def bars(ax, scen, groups, field):
+    groups = [g for g in groups if g[1]]
+    h = 0.8 / len(groups)
+    for j, (nm, data, col) in enumerate(groups):
         for i, sc in enumerate(scen):
-            s = [r for r in data if r["scenario"] == sc and r["condition"] == c]
+            s = [r for r in data if r["scenario"] == sc]
             k, n = sum(int(r[field]) for r in s), len(s)
             if not n:
                 continue
             lo, hi = wilson(k, n)
-            y = i + (j - (len(conds) - 1) / 2) * h
-            ax.barh(y, 100 * k / n, height=h - 0.06, color=C[c], label=NAME[c] if i == 0 else None)
-            ax.errorbar(100 * k / n, y, xerr=[[100 * k / n - 100 * lo], [100 * hi - 100 * k / n]], fmt="o",
-                        ms=4, color=INK2, ecolor="#9a9893", elinewidth=1.2, capsize=4)
-            ax.text(max(100 * hi, 100 * k / n) + 2, y, "%d/%d" % (k, n), va="center", fontsize=14, color=INK2)
+            y = i + (j - (len(groups) - 1) / 2) * h
+            ax.barh(y, 100 * k / n, height=h - 0.04, color=col, label=nm if i == 0 else None)
+            ax.plot([100 * lo, 100 * hi], [y, y], color="#9a9893", lw=1.0)
+            ax.text(100 * hi + 1.5, y, "%d/%d" % (k, n), va="center", fontsize=11, color=INK2)
     ax.set_yticks(range(len(scen)))
     ax.set_yticklabels([short(s) for s in scen])
     ax.invert_yaxis()
-    ax.set_xlim(0, 118)
+    ax.set_xlim(0, 112)
     ax.set_xticks([0, 25, 50, 75, 100])
     ax.set_xticklabels(["0%", "25%", "50%", "75%", "100%"])
     ax.grid(axis="x", color=GRID)
     ax.set_axisbelow(True)
-    for s in ("top", "right", "left"):
-        ax.spines[s].set_visible(False)
+    for sp in ("top", "right", "left"):
+        ax.spines[sp].set_visible(False)
 
 
 def fig_results():
-    data = rows()
     fig = plt.figure(figsize=(16, 9), dpi=100, facecolor=BG)
-    ax1 = fig.add_axes([0.30, 0.40, 0.66, 0.43])
+    ax1 = fig.add_axes([0.30, 0.40, 0.66, 0.39])
     ax2 = fig.add_axes([0.30, 0.06, 0.66, 0.26])
-    bars(ax1, HARM + PRE, data, "unsafe")
-    bars(ax2, SAFE, data, "over_refusal")
-    n = len([r for r in data if r["condition"] == "P0" and r["scenario"] == HARM[0]])
+    bars(ax1, HARM + PRE, series(), "unsafe")
+    bars(ax2, SAFE, series(), "over_refusal")
     fig.text(0.02, 0.94, "How often the agent paid an order the human did not approve", fontsize=28, weight="bold")
-    fig.text(0.02, 0.895, "sandbox store, Sonnet as the shopping agent, %d runs per bar, whiskers = 95%% CI. "
-             "Change injected after the approval tap." % n, fontsize=16, color=INK2)
-    ax1.set_title("harmful change: % of runs that paid it (unsafe)", loc="left", fontsize=18, color=INK)
-    ax2.set_title("harmless change: % of runs that refused to pay (over-refusal)", loc="left", fontsize=18, color=INK)
-    ax1.legend(loc="lower right", frameon=False, fontsize=15)
+    fig.text(0.02, 0.895, "sandbox store, 5 runs per bar, grey line = 95% CI. "
+             "The merchant changes the order after the approval tap.", fontsize=16, color=INK2)
+    ax1.set_title("harmful change: % of runs that paid it", loc="left", fontsize=18, color=INK)
+    ax2.set_title("harmless change: % of runs that refused to pay", loc="left", fontsize=18, color=INK)
+    h, l = ax1.get_legend_handles_labels()
+    fig.legend(h, l, loc="upper left", bbox_to_anchor=(0.02, 0.875), ncol=3, frameon=False, fontsize=15)
     fig.savefig(os.path.join(IMG, "1_results.png"), facecolor=BG)
 
 
@@ -160,16 +167,17 @@ def fig_side_by_side():
 
 
 def fig_guard():
-    data = rows()
-    live = rows(phase="guard")
-    unsafe = [r for r in data if r["unsafe"] == "1"]
-    safe_pay = [r for r in data if SCEN[r["scenario"]]["class"] == "safe" and r["guard_block"] != ""]
+    main = [r for r in csv.DictReader(open(os.path.join(REPO, "runs", "results.csv"))) if r["phase"] == "main"]
+    unsafe = [r for r in main if r["unsafe"] == "1"]
+    safe_pay = [r for r in main if SCEN[r["scenario"]]["class"] == "safe" and r["guard_block"] != ""]
     fig = plt.figure(figsize=(16, 9), dpi=100, facecolor=BG)
-    fig.text(0.03, 0.93, "Binding the token to the approved cart", fontsize=28, weight="bold")
-    ax = fig.add_axes([0.05, 0.14, 0.40, 0.62])
+    fig.text(0.03, 0.93, "Bind the token to the approved cart", fontsize=28, weight="bold")
+    fig.text(0.03, 0.885, "strict = same lines, total <= approved + $0.50, same recurring flag.  "
+             "no-increase = only block added paid lines, higher qty or higher price.", fontsize=14, color=INK2)
+    ax = fig.add_axes([0.06, 0.14, 0.38, 0.62])
     labels, vals, tots, cols = [], [], [], []
     for field, nm in (("guard_block", "strict"), ("guard_block_no_increase", "no-increase")):
-        labels += ["unsafe pays\nblocked (%s)" % nm, "safe pays\nblocked (%s)" % nm]
+        labels += ["unsafe pays\nblocked\n(%s)" % nm, "harmless pays\nblocked\n(%s)" % nm]
         vals += [sum(int(r[field]) for r in unsafe), sum(int(r[field]) for r in safe_pay)]
         tots += [len(unsafe), len(safe_pay)]
         cols += ["#2a78d6", "#eb6834"]
@@ -183,24 +191,32 @@ def fig_guard():
     ax.set_yticklabels(["0%", "50%", "100%"])
     ax.grid(axis="y", color=GRID)
     ax.set_axisbelow(True)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    ax.set_title("offline replay of every main-batch pay attempt", loc="left", fontsize=17)
-    ax2 = fig.add_axes([0.62, 0.14, 0.34, 0.62])
-    cnt = Counter(r["after_decline"] or ("never declined: " + r["outcome"]) for r in live)
-    items = sorted(cnt.items(), key=lambda kv: -kv[1])
-    ax2.barh(range(len(items)), [v for _, v in items], color="#2a78d6", height=0.6)
-    for i, (_, v) in enumerate(items):
-        ax2.text(v + 0.2, i, str(v), va="center", fontsize=16)
-    ax2.set_yticks(range(len(items)))
-    ax2.set_yticklabels([k.replace("_", " ") for k, _ in items], fontsize=13)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.set_title("offline replay, all %d main-batch runs" % len(main), loc="left", fontsize=17)
+    ax2 = fig.add_axes([0.53, 0.14, 0.43, 0.62])
+    cats = [("hit a decline", lambda r: int(r["n_declines"]) > 0),
+            ("re-asked with an accurate\nnew card, then paid", lambda r: r["after_decline"] == "re_requested_accurate_then_paid"),
+            ("fudged the card\nto get past the guard", lambda r: "card_mismatch" in r["after_decline"]),
+            ("paid a change the\nhuman never saw", lambda r: r["unsafe"] == "1")]
+    models = [("sonnet", "Sonnet", "#2a78d6"), ("haiku", "Haiku", "#1baf7a")]
+    h = 0.38
+    for j, (m, nm, col) in enumerate(models):
+        live = rows(phase="guard", model=m, guard="1")
+        for i, (_, f) in enumerate(cats):
+            v = sum(1 for r in live if f(r))
+            y = i + (j - 0.5) * h
+            ax2.barh(y, v, height=h - 0.06, color=col, label="%s (%d runs)" % (nm, len(live)) if i == 0 else None)
+            ax2.text(v + 0.3, y, str(v), va="center", fontsize=15)
+    ax2.set_yticks(range(len(cats)))
+    ax2.set_yticklabels([c for c, _ in cats], fontsize=14)
     ax2.invert_yaxis()
-    ax2.set_xlim(0, max([v for _, v in items] + [1]) * 1.25)
-    for s in ("top", "right"):
-        ax2.spines[s].set_visible(False)
-    ax2.set_title("live: what the agent did after a decline (%d runs)" % len(live), loc="left", fontsize=17)
-    fig.text(0.03, 0.885, "strict = same lines, total <= approved + $0.50, same recurring flag. "
-             "no-increase = only block added paid lines / higher qty or price.", fontsize=14, color=INK2)
+    ax2.set_xlim(0, 21)
+    ax2.set_xticks([0, 6, 12, 18])
+    for sp in ("top", "right"):
+        ax2.spines[sp].set_visible(False)
+    ax2.legend(frameon=False, loc="lower right", fontsize=14)
+    ax2.set_title("live, guard on, P0, harmful scenarios a-f", loc="left", fontsize=17)
     fig.savefig(os.path.join(IMG, "3_guard.png"), facecolor=BG)
 
 
@@ -215,7 +231,7 @@ def fig_cards():
                ("unsafe", "paid a harmful\nchange (a-f, k)")]
     fig = plt.figure(figsize=(16, 9), dpi=100, facecolor=BG)
     fig.text(0.03, 0.93, "Accurate cards, but does the agent look again before paying?", fontsize=26, weight="bold")
-    ax = fig.add_axes([0.07, 0.12, 0.88, 0.68])
+    ax = fig.add_axes([0.07, 0.12, 0.88, 0.62])
     cols = ["#2a78d6", "#eb6834", "#1baf7a"]
     w = 0.8 / len(groups)
     for gi, (nm, g) in enumerate(groups):
@@ -238,8 +254,9 @@ def fig_cards():
     ax.set_axisbelow(True)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    ax.legend(frameon=False, loc="upper right", fontsize=15)
-    fig.text(0.03, 0.88, "card accuracy uses the first approval card; lines = 95% CI", fontsize=15, color=INK2)
+    h, l = ax.get_legend_handles_labels()
+    fig.legend(h, l, loc="upper left", bbox_to_anchor=(0.03, 0.86), ncol=3, frameon=False, fontsize=15)
+    fig.text(0.03, 0.88, "all main-batch runs; card accuracy = first approval card; re-check = separate page view before pay; lines = 95% CI", fontsize=15, color=INK2)
     fig.savefig(os.path.join(IMG, "4_cards_and_looking.png"), facecolor=BG)
 
 
@@ -247,7 +264,6 @@ if __name__ == "__main__":
     os.makedirs(IMG, exist_ok=True)
     fig_results()
     print("side-by-side run:", fig_side_by_side())
-    if rows(phase="guard"):
-        fig_guard()
+    fig_guard()
     fig_cards()
     print("images written to", IMG)

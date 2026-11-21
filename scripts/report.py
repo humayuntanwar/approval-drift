@@ -50,6 +50,10 @@ def main():
     say("runs.total", "%d scored runs: %s" % (len(rows), ", ".join(
         "%s/%s=%d" % (p, m, sum(1 for r in rows if r["phase"] == p and r["model"] == m)) for p, m in groups)))
     say("runs.status", dict(Counter(r["status"] for r in rows)))
+    nonpilot = [r for r in rows if r["phase"] != "pilot"]
+    den = [r for r in nonpilot if int(r["n_denied_calls"]) > 0]
+    say("runs.denied", "%d/%d non-pilot runs had >=1 shell call refused by the permission layer; refused commands: %s"
+        % (len(den), len(nonpilot), dict(Counter(c for r in den for c in r["denied_cmds"].split(";")))))
     for phase, model in groups:
         if phase == "pilot":
             continue
@@ -88,6 +92,8 @@ def main():
             if s:
                 say(t + ".over_refusal_g-j", rate(s, "over_refusal")[2])
             say(t + ".card_accurate_first", rate(gc, "card_accurate")[2])
+            say(t + ".looked_after_approval_all", rate([r for r in gc if int(r["n_approvals"]) > 0], "looked_after_approval")[2])
+            say(t + ".unsafe_a-f+k", rate([r for r in gc if SCEN[r["scenario"]]["class"] != "safe"], "unsafe")[2])
             say(t + ".outcomes_all", dict(Counter(r["outcome"] for r in gc)))
             # run-to-run spread: cells (scenario) where reps disagree on outcome
             cells = defaultdict(set)
@@ -119,6 +125,28 @@ def main():
             say(tag + ".guard_live.outcomes", dict(Counter(r["outcome"] for r in live)))
             say(tag + ".guard_live.unsafe", rate(live, "unsafe")[2])
             say(tag + ".guard_live.all_cards_accurate", rate(live, "all_cards_accurate")[2])
+    # offline replay pooled over all main-batch runs (both models)
+    m = [r for r in rows if r["phase"] == "main"]
+    unsafe = [r for r in m if r["unsafe"] == "1"]
+    safe = [r for r in m if SCEN[r["scenario"]]["class"] == "safe" and r["guard_block"] != ""]
+    for field, name in (("guard_block", "strict"), ("guard_block_no_increase", "no_increase")):
+        say("main.all.guard_replay.%s" % name, "caught %d/%d unsafe pays; false-blocked %d/%d safe pay attempts"
+            % (sum(int(r[field]) for r in unsafe), len(unsafe), sum(int(r[field]) for r in safe), len(safe)))
+    fudge = [r for r in rows if r["phase"] == "guard" and "card_mismatch" in r["after_decline"]]
+    say("guard.all.fudged_cards", "%d live-guard runs re-requested approval with a card that did not match the page" % len(fudge))
+    # wall-clock per batch from meta.json
+    import glob
+    for d in sorted(glob.glob(os.path.join(REPO, "runs", "*"))):
+        metas = [json.load(open(m)) for m in glob.glob(os.path.join(d, "*", "meta.json"))]
+        for model in sorted({m["model"] for m in metas}):
+            mm = [m for m in metas if m["model"] == model]
+            wall = max(m["started"] + m["seconds"] for m in mm) - min(m["started"] for m in mm)
+            say("runtime.%s.%s" % (os.path.basename(d), model), "%d runs, wall-clock %.1f min at <=3 parallel, mean %.0f s/run"
+                % (len(mm), wall / 60, sum(m["seconds"] for m in mm) / len(mm)))
+    infos = [json.load(open(m)).get("rate_limit_info", {}) for m in glob.glob(os.path.join(REPO, "runs", "*", "*", "meta.json"))]
+    say("usage", "%d acting runs; rate_limit statuses %s; peak five_hour utilization %.0f%%" % (
+        len(infos), sorted({i.get("status", "none") for i in infos}),
+        100 * max(i.get("unifiedWindows", {}).get("five_hour", {}).get("utilization", 0) for i in infos)))
     text = "\n".join(str(x) for x in out)
     print(text)
     open(os.path.join(REPO, "runs", "report.txt"), "w").write(text + "\n")
